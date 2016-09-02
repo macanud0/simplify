@@ -13,7 +13,7 @@ def findFileInDir(dir, fileName):
                print(file_path)
                
                if not os.path.exists(dir_name):
-                   os.makedirs(fileName + '_books')
+                   os.makedirs(dir_name)
                    
                local_file = os.path.join(dir_name,file)
                print('Local file %s' % local_file)
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1: 
         findFileInDir(str(sys.argv[1]), str(sys.argv[2]))
     else:
-        print('Usage: python find-move.py folder file)
+        print('Usage: python find-move.py folder file')
