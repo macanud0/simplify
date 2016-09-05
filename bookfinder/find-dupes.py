@@ -1,6 +1,7 @@
 # dupFinder.py
 import os, sys
 import hashlib
+import argparse as ap
  
 def findDup(parentFolder):
     # Dups in format {hash:[names]}
@@ -55,8 +56,6 @@ def printResults(dict1):
  
  
 def deleteDups(dict1):
-    for i in dict1:
-        print i, dict1[i]
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
         print('Removing dupes:')
@@ -74,21 +73,30 @@ def deleteDups(dict1):
  
  
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        dups = {}
-        print("Printing...")
-        folders = sys.argv[1:]
-        print("Folder(s) passed in %s" % folders)
-        for i in folders:
-            # Iterate the folders given
-            if os.path.exists(i):
-                print(folders)
-                # Find the duplicated files and append them to the dups
-                joinDicts(dups, findDup(i))
-            else:
-                print('%s is not a valid path, please verify' % i)
-                sys.exit()        
-        printResults(dups)
-        deleteDups(dups)
+    
+    parser = ap.ArgumentParser(description="Find duplicate files. ")
+    parser.add_argument("--sources", nargs="+", help="list of directories to look for duplicates")
+    parser.add_argument("--delete", action="store_true", help="Delete all duplicates. [Optional]")
+    
+    args, leftovers = parser.parse_known_args()
+
+    if args.sources is not None:
+            dups = {}
+            folders = args.sources
+            for i in folders:              
+                if not i.startswith('.'):
+                    # Iterate the folders given
+                    if os.path.exists(i):                     
+                        # Find the duplicated files and append them to the dups
+                        joinDicts(dups, findDup(i))
+                    else:
+                        print('%s is not a valid path, please verify' % i)
+                        sys.exit()        
+                printResults(dups)
+                if args.delete:                        
+                    deleteDups(dups)
+       
     else:
-        print('Usage: python dupFinder.py folder or python dupFinder.py folder1 folder2 folder3')
+        print('Usage: python find-dupes.py --sources[source1, source2, source3...N]')
+    
+    
