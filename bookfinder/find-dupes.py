@@ -6,7 +6,6 @@ def findDup(parentFolder):
     # Dups in format {hash:[names]}
     dups = {}
     for dirName, subdirs, fileList in os.walk(parentFolder):
-        print('Scanning %s...' % dirName)
         for filename in fileList:
             # Get the path to the file
             path = os.path.join(dirName, filename)
@@ -56,6 +55,8 @@ def printResults(dict1):
  
  
 def deleteDups(dict1):
+    for i in dict1:
+        print i, dict1[i]
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
         print('Removing dupes:')
@@ -75,15 +76,19 @@ def deleteDups(dict1):
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         dups = {}
+        print("Printing...")
         folders = sys.argv[1:]
+        print("Folder(s) passed in %s" % folders)
         for i in folders:
             # Iterate the folders given
             if os.path.exists(i):
+                print(folders)
                 # Find the duplicated files and append them to the dups
                 joinDicts(dups, findDup(i))
             else:
                 print('%s is not a valid path, please verify' % i)
-                sys.exit()
+                sys.exit()        
+        printResults(dups)
         deleteDups(dups)
     else:
         print('Usage: python dupFinder.py folder or python dupFinder.py folder1 folder2 folder3')
